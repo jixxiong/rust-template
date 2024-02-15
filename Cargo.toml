@@ -6,3 +6,63 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+[[bin]]
+name = "test"
+path = "src/test.rs"
+
+[[bin]]
+name = "aa"
+path = "src/A.rs"
+
+[[bin]]
+name = "bb"
+path = "src/B.rs"
+
+[[bin]]
+name = "cc"
+path = "src/C.rs"
+
+[[bin]]
+name = "dd"
+path = "src/D.rs"
+
+[[bin]]
+name = "ee"
+path = "src/E.rs"
+
+[[bin]]
+name = "ff"
+path = "src/F.rs"
+
+[[bin]]
+name = "gg"
+path = "src/G.rs"
+
+[[bin]]
+name = "hh"
+path = "src/H.rs"
+
+[[bin]]
+name = "ii"
+path = "src/I.rs"
+
+[[bin]]
+name = "jj"
+path = "src/J.rs"
+
+[[bin]]
+name = "kk"
+path = "src/K.rs"
+
+[[bin]]
+name = "ll"
+path = "src/L.rs"
+
+[[bin]]
+name = "mm"
+path = "src/M.rs"
+
+[[bin]]
+name = "nn"
+path = "src/N.rs"
