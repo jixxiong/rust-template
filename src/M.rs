@@ -16,8 +16,8 @@ fn solve() {
 
 fn main() {
     unsafe { COUT = Some(io::BufWriter::new(io::stdout())) };
-    let multiple_test = false; // true
-    for _ in 1..=if multiple_test { cin::<i32>() } else { 1 } {
+    let multiple_tests = false; // true
+    for _ in 1..=if multiple_tests { cin::<i32>() } else { 1 } {
         solve();
     }
     match unsafe { &mut COUT } {
