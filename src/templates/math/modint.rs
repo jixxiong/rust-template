@@ -44,6 +44,11 @@ pub mod modint {
             ModInt((self.0 + rhs.0) % P)
         }
     }
+    impl<const P: i64> std::ops::AddAssign for ModInt<P> {
+        fn add_assign(&mut self, rhs: Self) {
+            *self = *self + rhs;
+        }
+    }
     impl<const P: i64> std::ops::Sub for ModInt<P> {
         type Output = ModInt<P>;
 
@@ -51,11 +56,21 @@ pub mod modint {
             ModInt((self.0 - rhs.0 + P) % P)
         }
     }
+    impl<const P: i64> std::ops::SubAssign for ModInt<P> {
+        fn sub_assign(&mut self, rhs: Self) {
+            *self = *self - rhs;
+        }
+    }
     impl<const P: i64> std::ops::Mul for ModInt<P> {
         type Output = ModInt<P>;
 
         fn mul(self, rhs: Self) -> Self::Output {
             ModInt(self.0 * rhs.0 % P)
+        }
+    }
+    impl<const P: i64> std::ops::MulAssign for ModInt<P> {
+        fn mul_assign(&mut self, rhs: Self) {
+            *self = *self * rhs;
         }
     }
     impl<const P: i64> Into<i64> for ModInt<P> {
