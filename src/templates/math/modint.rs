@@ -107,11 +107,13 @@ mod tests {
     fn test_qpow() {
         #[allow(non_camel_case_types)]
         type mint = ModInt<31>;
-        let x: mint = 10.into();
+        let mut x: mint = 10.into();
         let y: mint = 12.into();
         assert_eq!(x + y, 22.into());
         assert_eq!(x * y, 27.into());
         assert_eq!(x - y, 29.into());
         assert_eq!(x.inv(), 28.into());
+        x += y;
+        assert_eq!(x, 22.into());
     }
 }
