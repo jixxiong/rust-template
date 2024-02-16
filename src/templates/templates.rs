@@ -6,3 +6,7 @@ pub mod math {
 pub mod graph {
     pub mod sssp;
 }
+
+pub mod data_structure {
+    pub mod fenwick;
+}
