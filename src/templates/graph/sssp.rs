@@ -9,7 +9,7 @@ pub mod sssp {
         que.push((0, source));
         while !que.is_empty() {
             let (f, u) = que.pop().unwrap();
-            if -f >= dis[source] {
+            if -f > dis[u] {
                 continue;
             }
             for &(v, w) in graph[u].iter() {
@@ -20,5 +20,20 @@ pub mod sssp {
             }
         }
         dis
+    }
+}
+
+mod tests {
+    #[test]
+    fn test_qpow() {
+        let graph = vec![
+            vec![],
+            vec![(3, 2), (4, 3)],
+            vec![(1, 2), (4, 1)],
+            vec![(1, 2), (4, 100)],
+            vec![(3, 1), (2, 1)],
+        ];
+        let dis = super::sssp::dijkstra_sssp(graph, 1);
+        assert_eq!(dis, vec![9223372036854775807_i64, 0, 4, 2, 3]);
     }
 }
