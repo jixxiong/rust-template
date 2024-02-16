@@ -1,10 +1,10 @@
 #[allow(unused)]
 pub mod fenwick {
-    struct Fenwich {
+    struct Fenwick {
         sum: Vec<i64>,
         n: i32,
     }
-    impl Fenwich {
+    impl Fenwick {
         fn new(n: usize) -> Self {
             Self {
                 sum: vec![0; n + 1],
