@@ -7,6 +7,10 @@ edition = "2021"
 
 [dependencies]
 
+[lib]
+name = "templates"
+path = "src/templates/templates.rs"
+
 [[bin]]
 name = "test"
 path = "src/test.rs"
