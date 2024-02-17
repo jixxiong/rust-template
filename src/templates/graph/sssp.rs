@@ -1,7 +1,7 @@
 pub mod sssp {
     use std::collections::BinaryHeap;
 
-    pub fn dijkstra_sssp(graph: Vec<Vec<(usize, i64)>>, source: usize) -> Vec<i64> {
+    pub fn dijkstra_sssp(graph: &Vec<Vec<(usize, i64)>>, source: usize) -> Vec<i64> {
         let n = graph.len() - 1;
         let mut dis = vec![i64::MAX; n + 1];
         let mut que = BinaryHeap::new();
@@ -33,7 +33,7 @@ mod tests {
             vec![(1, 2), (4, 100)],
             vec![(3, 1), (2, 1)],
         ];
-        let dis = super::sssp::dijkstra_sssp(graph, 1);
+        let dis = super::sssp::dijkstra_sssp(&graph, 1);
         assert_eq!(dis, vec![9223372036854775807_i64, 0, 4, 2, 3]);
     }
 }
