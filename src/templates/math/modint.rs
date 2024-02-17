@@ -83,6 +83,18 @@ pub mod modint {
             *self = *self * rhs;
         }
     }
+    impl<const P: i32> std::ops::Div for ModInt<P> {
+        type Output = ModInt<P>;
+
+        fn div(self, rhs: Self) -> Self::Output {
+            self * rhs.inv()
+        }
+    }
+    impl<const P: i32> std::ops::DivAssign for ModInt<P> {
+        fn div_assign(&mut self, rhs: Self) {
+            *self = *self / rhs;
+        }
+    }
     impl<const P: i32> Into<i32> for ModInt<P> {
         fn into(self) -> i32 {
             self.0

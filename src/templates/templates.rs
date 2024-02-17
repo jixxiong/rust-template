@@ -1,6 +1,7 @@
 pub mod math {
     pub mod modint;
     pub mod qpow;
+    pub mod ratio;
 }
 
 pub mod graph {
