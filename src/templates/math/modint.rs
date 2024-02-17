@@ -1,6 +1,4 @@
 pub mod modint {
-    use std::ops::Rem;
-
     pub fn qpow(mut x: i32, mut y: i32, p: i32) -> i32 {
         if y == 0 {
             return 1;
@@ -20,7 +18,7 @@ pub mod modint {
     impl<const P: i32> ModInt<P> {
         pub fn new<T>(value: T) -> Self
         where
-            T: Into<i32> + Rem<Output = T> + From<i32>,
+            T: Into<i32> + std::ops::Rem<Output = T> + From<i32>,
         {
             let result = (value % P.into()).into();
             ModInt(if result < 0 { result + P } else { result })
@@ -30,7 +28,7 @@ pub mod modint {
         }
         pub fn pow<T>(self, y: T) -> Self
         where
-            T: Into<i32> + Rem<Output = T> + From<i32>,
+            T: Into<i32> + std::ops::Rem<Output = T> + From<i32>,
         {
             let y = ModInt::<P>::new(y);
             ModInt(qpow(self.0, y.0, P))
