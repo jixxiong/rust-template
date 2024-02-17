@@ -14,13 +14,14 @@ pub mod modint {
         return ans;
     }
     #[derive(Copy, Clone, Eq, PartialEq, PartialOrd, Ord, Debug, Default)]
-    pub struct ModInt<const P: i64>(pub i64);
+    pub struct ModInt<const P: i64>(i64);
     impl<const P: i64> ModInt<P> {
         pub fn new<T>(value: T) -> Self
         where
             T: Into<i64>,
         {
-            ModInt(value.into())
+            let result = value.into() % P;
+            ModInt(if result < 0 { result + P } else { result })
         }
         pub fn inv(self) -> Self {
             ModInt(qpow(self.0, P - 2, P))
@@ -41,7 +42,8 @@ pub mod modint {
         type Output = ModInt<P>;
 
         fn add(self, rhs: Self) -> Self::Output {
-            ModInt((self.0 + rhs.0) % P)
+            let result = self.0 + rhs.0;
+            ModInt(if result > P { result - P } else { result })
         }
     }
     impl<const P: i64> std::ops::AddAssign for ModInt<P> {
@@ -53,12 +55,20 @@ pub mod modint {
         type Output = ModInt<P>;
 
         fn sub(self, rhs: Self) -> Self::Output {
-            ModInt((self.0 - rhs.0 + P) % P)
+            let result = self.0 - rhs.0;
+            ModInt(if result < 0 { result + P } else { result })
         }
     }
     impl<const P: i64> std::ops::SubAssign for ModInt<P> {
         fn sub_assign(&mut self, rhs: Self) {
             *self = *self - rhs;
+        }
+    }
+    impl<const P: i64> std::ops::Neg for ModInt<P> {
+        type Output = ModInt<P>;
+
+        fn neg(self) -> Self::Output {
+            ModInt(P - self.0)
         }
     }
     impl<const P: i64> std::ops::Mul for ModInt<P> {
@@ -85,12 +95,12 @@ pub mod modint {
     }
     impl<const P: i64> From<i64> for ModInt<P> {
         fn from(value: i64) -> Self {
-            ModInt(value)
+            ModInt::new(value)
         }
     }
     impl<const P: i64> From<i32> for ModInt<P> {
         fn from(value: i32) -> Self {
-            ModInt(value.into())
+            ModInt::new(value as i64)
         }
     }
     #[allow(non_camel_case_types)]
