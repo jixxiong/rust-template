@@ -18,19 +18,18 @@ pub mod modint {
     impl<const P: i32> ModInt<P> {
         pub fn new<T>(value: T) -> Self
         where
-            T: Into<i32> + std::ops::Rem<Output = T> + From<i32>,
+            T: std::convert::TryInto<i32> + std::ops::Rem<Output = T> + From<i32> + PartialOrd,
         {
-            let result = (value % P.into()).into();
+            if value >= 0.into() && value < P.into() {
+                return ModInt(value.try_into().ok().unwrap());
+            }
+            let result = (value % P.into()).try_into().ok().unwrap();
             ModInt(if result < 0 { result + P } else { result })
         }
         pub fn inv(self) -> Self {
             ModInt(qpow(self.0, P - 2, P))
         }
-        pub fn pow<T>(self, y: T) -> Self
-        where
-            T: Into<i32> + std::ops::Rem<Output = T> + From<i32>,
-        {
-            let y = ModInt::<P>::new(y);
+        pub fn pow(self, y: Self) -> Self {
             ModInt(qpow(self.0, y.0, P))
         }
     }
@@ -124,7 +123,12 @@ mod tests {
         assert_eq!(x * y, 27.into());
         assert_eq!(x - y, 29.into());
         assert_eq!(x.inv(), 28.into());
+        assert_eq!(mint::new(10).pow(2.into()), 7.into());
         x += y;
         assert_eq!(x, 22.into());
+        let z: mint = 10_i64.into();
+        let a = mint::new(1e16 as i64);
+        assert_eq!(z, 10.into());
+        assert_eq!(a, 10.into());
     }
 }
