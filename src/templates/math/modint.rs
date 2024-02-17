@@ -1,26 +1,28 @@
 pub mod modint {
-    pub fn qpow(mut x: i64, mut y: i64, p: i64) -> i64 {
+    use std::ops::Rem;
+
+    pub fn qpow(mut x: i32, mut y: i32, p: i32) -> i32 {
         if y == 0 {
             return 1;
         }
-        let mut ans = 1;
+        let mut ans: i32 = 1;
         while y != 0 {
             if (y & 1) == 1 {
-                ans = ans * x % p;
+                ans = (ans as i64 * x as i64 % p as i64) as i32;
             }
-            x = x * x % p;
+            x = (x as i64 * x as i64 % p as i64) as i32;
             y >>= 1;
         }
         return ans;
     }
     #[derive(Copy, Clone, Eq, PartialEq, PartialOrd, Ord, Debug, Default)]
-    pub struct ModInt<const P: i64>(i64);
-    impl<const P: i64> ModInt<P> {
+    pub struct ModInt<const P: i32>(i32);
+    impl<const P: i32> ModInt<P> {
         pub fn new<T>(value: T) -> Self
         where
-            T: Into<i64>,
+            T: Into<i32> + Rem<Output = T> + From<i32>,
         {
-            let result = value.into() % P;
+            let result = (value % P.into()).into();
             ModInt(if result < 0 { result + P } else { result })
         }
         pub fn inv(self) -> Self {
@@ -28,30 +30,31 @@ pub mod modint {
         }
         pub fn pow<T>(self, y: T) -> Self
         where
-            T: Into<i64>,
+            T: Into<i32> + Rem<Output = T> + From<i32>,
         {
-            ModInt(qpow(self.0, y.into(), P))
+            let y = ModInt::<P>::new(y);
+            ModInt(qpow(self.0, y.0, P))
         }
     }
-    impl<const P: i64> std::fmt::Display for ModInt<P> {
+    impl<const P: i32> std::fmt::Display for ModInt<P> {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(f, "{}", self.0)
         }
     }
-    impl<const P: i64> std::ops::Add for ModInt<P> {
+    impl<const P: i32> std::ops::Add for ModInt<P> {
         type Output = ModInt<P>;
 
         fn add(self, rhs: Self) -> Self::Output {
             let result = self.0 + rhs.0;
-            ModInt(if result > P { result - P } else { result })
+            ModInt(if result >= P { result - P } else { result })
         }
     }
-    impl<const P: i64> std::ops::AddAssign for ModInt<P> {
+    impl<const P: i32> std::ops::AddAssign for ModInt<P> {
         fn add_assign(&mut self, rhs: Self) {
             *self = *self + rhs;
         }
     }
-    impl<const P: i64> std::ops::Sub for ModInt<P> {
+    impl<const P: i32> std::ops::Sub for ModInt<P> {
         type Output = ModInt<P>;
 
         fn sub(self, rhs: Self) -> Self::Output {
@@ -59,48 +62,48 @@ pub mod modint {
             ModInt(if result < 0 { result + P } else { result })
         }
     }
-    impl<const P: i64> std::ops::SubAssign for ModInt<P> {
+    impl<const P: i32> std::ops::SubAssign for ModInt<P> {
         fn sub_assign(&mut self, rhs: Self) {
             *self = *self - rhs;
         }
     }
-    impl<const P: i64> std::ops::Neg for ModInt<P> {
+    impl<const P: i32> std::ops::Neg for ModInt<P> {
         type Output = ModInt<P>;
 
         fn neg(self) -> Self::Output {
-            ModInt(P - self.0)
+            ModInt(if self.0 == 0 { 0 } else { P - self.0 })
         }
     }
-    impl<const P: i64> std::ops::Mul for ModInt<P> {
+    impl<const P: i32> std::ops::Mul for ModInt<P> {
         type Output = ModInt<P>;
 
         fn mul(self, rhs: Self) -> Self::Output {
-            ModInt(self.0 * rhs.0 % P)
+            ModInt((self.0 as i64 * rhs.0 as i64 % P as i64) as i32)
         }
     }
-    impl<const P: i64> std::ops::MulAssign for ModInt<P> {
+    impl<const P: i32> std::ops::MulAssign for ModInt<P> {
         fn mul_assign(&mut self, rhs: Self) {
             *self = *self * rhs;
         }
     }
-    impl<const P: i64> Into<i64> for ModInt<P> {
-        fn into(self) -> i64 {
+    impl<const P: i32> Into<i32> for ModInt<P> {
+        fn into(self) -> i32 {
             self.0
         }
     }
-    impl<const P: i64> Into<i32> for ModInt<P> {
-        fn into(self) -> i32 {
-            self.0 as i32
+    impl<const P: i32> Into<i64> for ModInt<P> {
+        fn into(self) -> i64 {
+            self.0 as i64
         }
     }
-    impl<const P: i64> From<i64> for ModInt<P> {
-        fn from(value: i64) -> Self {
+    impl<const P: i32> From<i32> for ModInt<P> {
+        fn from(value: i32) -> Self {
             ModInt::new(value)
         }
     }
-    impl<const P: i64> From<i32> for ModInt<P> {
-        fn from(value: i32) -> Self {
-            ModInt::new(value as i64)
+    impl<const P: i32> From<i64> for ModInt<P> {
+        fn from(value: i64) -> Self {
+            ModInt::new((value % P as i64) as i32)
         }
     }
     #[allow(non_camel_case_types)]
