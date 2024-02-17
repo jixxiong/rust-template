@@ -11,7 +11,7 @@ pub mod modint {
             x = (x as i64 * x as i64 % p as i64) as i32;
             y >>= 1;
         }
-        return ans;
+        ans
     }
     #[derive(Copy, Clone, Eq, PartialEq, PartialOrd, Ord, Debug, Default)]
     pub struct ModInt<const P: i32>(i32);
