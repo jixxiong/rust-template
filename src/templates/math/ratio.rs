@@ -1,52 +1,27 @@
 pub mod ratio {
     use std::ops::*;
-    pub trait PrimitiveOps<T>:
-        Add<Output = T>
-        + Sub<Output = T>
-        + SubAssign
-        + Mul<Output = T>
-        + MulAssign
-        + Div<Output = T>
-        + DivAssign
-        + Neg<Output = T>
-        + Rem<Output = T>
-        + RemAssign
-        + Copy
-        + Clone
-        + PartialEq
-        + Eq
-        + PartialOrd
-        + Ord
-        + Default
-        + From<i64>
-        + std::fmt::Display
-    {
+    #[derive(Copy, Clone, PartialEq, Eq, Ord, Debug)]
+    pub struct Ratio {
+        num: i64,
+        den: i64,
     }
-    impl PrimitiveOps<i64> for i64 {}
-    impl PrimitiveOps<i128> for i128 {}
-
-    #[derive(Copy, Clone, PartialEq, PartialOrd, Debug, Default)]
-    pub struct Ratio<T> {
-        num: T,
-        den: T,
-    }
-
-    pub fn gcd<T: PrimitiveOps<T>>(x: T, y: T) -> T {
-        if y == 0.into() {
-            x
-        } else {
-            gcd(y, x % y)
+    pub fn gcd(x: i64, y: i64) -> i64 {
+        match y {
+            0 => x,
+            y => gcd(y, x % y),
         }
     }
-    pub fn simplify<T: PrimitiveOps<T>>(x: T, y: T) -> (T, T) {
-        if x == 0.into() {
-            return (0.into(), 1.into());
+    pub fn simplify(x: i64, y: i64) -> (i64, i64) {
+        match x {
+            0 => (0, 1),
+            x => {
+                let g = gcd(x, y);
+                (x / g, y / g)
+            }
         }
-        let g = gcd(x, y);
-        (x / g, y / g)
     }
-    impl<T: PrimitiveOps<T>> Ratio<T> {
-        pub fn new(num: T, den: T) -> Self {
+    impl Ratio {
+        pub fn new(num: i64, den: i64) -> Self {
             assert!(den != 0.into());
             let (num, den) = simplify(num, den);
             if den < 0.into() {
@@ -59,57 +34,62 @@ pub mod ratio {
             }
         }
     }
-    impl<T: PrimitiveOps<T>> Add for Ratio<T> {
-        type Output = Ratio<T>;
+    impl Default for Ratio {
+        fn default() -> Self {
+            Self { num: 0, den: 1 }
+        }
+    }
+    impl Add for Ratio {
+        type Output = Ratio;
 
         fn add(self, rhs: Self) -> Self::Output {
             Ratio::new(self.num * rhs.den + rhs.num * self.den, self.den * rhs.den)
         }
     }
-    impl<T: PrimitiveOps<T>> AddAssign for Ratio<T> {
+    impl AddAssign for Ratio {
         fn add_assign(&mut self, rhs: Self) {
             *self = *self + rhs;
         }
     }
-    impl<T: PrimitiveOps<T>> Sub for Ratio<T> {
-        type Output = Ratio<T>;
+    impl Sub for Ratio {
+        type Output = Ratio;
 
         fn sub(self, rhs: Self) -> Self::Output {
             Ratio::new(self.num * rhs.den - rhs.num * self.den, self.den * rhs.den)
         }
     }
-    impl<T: PrimitiveOps<T>> SubAssign for Ratio<T> {
+    impl SubAssign for Ratio {
         fn sub_assign(&mut self, rhs: Self) {
             *self = *self - rhs;
         }
     }
-    impl<T: PrimitiveOps<T>> Mul for Ratio<T> {
-        type Output = Ratio<T>;
+    impl Mul for Ratio {
+        type Output = Ratio;
 
         fn mul(self, rhs: Self) -> Self::Output {
             Ratio::new(self.num * rhs.num, self.den * rhs.den)
         }
     }
-    impl<T: PrimitiveOps<T>> MulAssign for Ratio<T> {
+    impl MulAssign for Ratio {
         fn mul_assign(&mut self, rhs: Self) {
             *self = *self * rhs;
         }
     }
-    impl<T: PrimitiveOps<T>> Div for Ratio<T> {
-        type Output = Ratio<T>;
+    impl Div for Ratio {
+        type Output = Ratio;
 
         fn div(self, rhs: Self) -> Self::Output {
             assert!(rhs.num != 0.into());
             Ratio::new(self.num * rhs.den, self.den * rhs.num)
         }
     }
-    impl<T: PrimitiveOps<T>> DivAssign for Ratio<T> {
+    impl DivAssign for Ratio {
         fn div_assign(&mut self, rhs: Self) {
             *self = *self / rhs;
         }
     }
-    impl<T: PrimitiveOps<T>> Neg for Ratio<T> {
-        type Output = Ratio<T>;
+    impl Neg for Ratio {
+        type Output = Ratio;
         fn neg(self) -> Self::Output {
             Self::Output {
                 num: -self.num,
@@ -117,12 +97,17 @@ pub mod ratio {
             }
         }
     }
-    impl<T: PrimitiveOps<T>> From<T> for Ratio<T> {
+    impl<T: Into<i64>> From<T> for Ratio {
         fn from(value: T) -> Self {
-            Self::new(value, 1.into())
+            Self::new(value.into(), 1)
         }
     }
-    impl<T: PrimitiveOps<T>> std::fmt::Display for Ratio<T> {
+    impl PartialOrd for Ratio {
+        fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+            (self.num * other.den).partial_cmp(&(other.num * self.den))
+        }
+    }
+    impl std::fmt::Display for Ratio {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(f, "{}/{}", self.num, self.den)
         }
@@ -133,7 +118,7 @@ pub mod ratio {
 mod tests {
     #[test]
     fn test_ratio() {
-        type Ratio64 = super::ratio::Ratio<i64>;
+        type Ratio64 = super::ratio::Ratio;
         let x = Ratio64::new(3, 4);
         let y = Ratio64::new(4, 5);
         assert_eq!(x + y, Ratio64::new(31, 20));
@@ -143,5 +128,6 @@ mod tests {
         assert_eq!(x / y, Ratio64::new(15, 16));
         assert_eq!(x / 2.into(), Ratio64::new(3, 8));
         assert_eq!(-x, Ratio64::new(-3, 4));
+        assert!(x < y);
     }
 }
