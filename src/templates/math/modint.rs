@@ -40,7 +40,6 @@ pub mod modint {
     }
     impl<const P: i32> std::ops::Add for ModInt<P> {
         type Output = ModInt<P>;
-
         fn add(self, rhs: Self) -> Self::Output {
             let result = self.0 + rhs.0;
             ModInt(if result >= P { result - P } else { result })
@@ -53,7 +52,6 @@ pub mod modint {
     }
     impl<const P: i32> std::ops::Sub for ModInt<P> {
         type Output = ModInt<P>;
-
         fn sub(self, rhs: Self) -> Self::Output {
             let result = self.0 - rhs.0;
             ModInt(if result < 0 { result + P } else { result })
@@ -66,14 +64,12 @@ pub mod modint {
     }
     impl<const P: i32> std::ops::Neg for ModInt<P> {
         type Output = ModInt<P>;
-
         fn neg(self) -> Self::Output {
             ModInt(if self.0 == 0 { 0 } else { P - self.0 })
         }
     }
     impl<const P: i32> std::ops::Mul for ModInt<P> {
         type Output = ModInt<P>;
-
         fn mul(self, rhs: Self) -> Self::Output {
             ModInt((self.0 as i64 * rhs.0 as i64 % P as i64) as i32)
         }
@@ -85,7 +81,6 @@ pub mod modint {
     }
     impl<const P: i32> std::ops::Div for ModInt<P> {
         type Output = ModInt<P>;
-
         fn div(self, rhs: Self) -> Self::Output {
             self * rhs.inv()
         }

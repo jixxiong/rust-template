@@ -41,7 +41,6 @@ pub mod ratio {
     }
     impl Add for Ratio {
         type Output = Ratio;
-
         fn add(self, rhs: Self) -> Self::Output {
             Ratio::new(self.num * rhs.den + rhs.num * self.den, self.den * rhs.den)
         }
@@ -53,7 +52,6 @@ pub mod ratio {
     }
     impl Sub for Ratio {
         type Output = Ratio;
-
         fn sub(self, rhs: Self) -> Self::Output {
             Ratio::new(self.num * rhs.den - rhs.num * self.den, self.den * rhs.den)
         }
@@ -65,7 +63,6 @@ pub mod ratio {
     }
     impl Mul for Ratio {
         type Output = Ratio;
-
         fn mul(self, rhs: Self) -> Self::Output {
             Ratio::new(self.num * rhs.num, self.den * rhs.den)
         }
@@ -77,7 +74,6 @@ pub mod ratio {
     }
     impl Div for Ratio {
         type Output = Ratio;
-
         fn div(self, rhs: Self) -> Self::Output {
             assert!(rhs.num != 0.into());
             Ratio::new(self.num * rhs.den, self.den * rhs.num)
