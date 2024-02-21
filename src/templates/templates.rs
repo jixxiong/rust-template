@@ -10,4 +10,5 @@ pub mod graph {
 
 pub mod data_structure {
     pub mod fenwick;
+    pub mod segment_tree;
 }
